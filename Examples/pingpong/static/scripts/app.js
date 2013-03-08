@@ -15,7 +15,7 @@ var app = (function ($) { // run after document load
     var settings = {};
     var ws = null;
 
-    function send_pXng(ws, X) {
+    var send_pXng = function (ws, X) {
         // PING or PONG
 //        console.log(X + "ing");
         var msg = {msg_type: "PUB",
@@ -23,19 +23,19 @@ var app = (function ($) { // run after document load
             channel: settings.channel};
         ws.send(JSON.stringify(msg));
 
-    }
+    };
 
 
     // callback for succesfuly opening websocket
-    function onWSOpen() {
+    var onWSOpen = function () {
         console.log("websocket Opened.");
         // subscribe to channel named objid
         console.log("Sending Subscribe request to channel: " + settings.channel);
         ws.send(JSON.stringify({msg_type: "SUB", channel: settings.channel}));
-    }
+    };
 
 
-    function onWSMessage(msg) { // initial phase
+    var onWSMessage = function (msg) { // initial phase
         console.log("Received WS message: " + msg.data);
         var d = JSON.parse(msg.data);
         if (d.msg_type === "ACK") { // subscribe acknowledged
@@ -43,9 +43,9 @@ var app = (function ($) { // run after document load
             console.log("Subscribed. PING!");
             send_pXng(ws, "PING"); // send first ping to start the ball rolling
         }
-    }
+    };
 
-    function pingLooper(msg) {
+    var pingLooper = function (msg) {
 //        console.log("Received WS message: " + msg.data);
         var d = JSON.parse(msg.data);
         if (d.payload === "PING") {
@@ -60,25 +60,25 @@ var app = (function ($) { // run after document load
                 send_pXng(ws, "PING"); // send first ping to start the ball rolling
             }, 1000); // rest a while, then send the next ping
         }
-    }
+    };
 
-    function openWS(ws_url) {
+    var openWS = function (ws_url) {
         console.log("opening websocket to " + ws_url);
 
         ws = new WebSocket(ws_url);
         ws.onopen = onWSOpen;
         ws.onmessage = onWSMessage;
-    }
+    };
 
     // public API, availabe from global namespace under app
-    function start(options) {
+    var start = function (options) {
         // override defaults with provided options
         settings = $.extend({}, defaults, options);
 
         openWS(settings.ws_url, settings.objid);
 
 
-    }
+    };
 
     // return our API
     return {

@@ -34,18 +34,18 @@ var app = (function ($) { // run after document load
     var ws = null;
     var dataset = null;
 
-    function onError() {
+    var onError = function () {
         console.log("Oh My! an error!");
-    }
+    };
 
-    function onData(data) {
+    var onData = function (data) {
         dataset = data;
         console.log("opening ws to " + settings.ws_url);
         render();
-    }
+    };
 
     // make with the d3
-    function render() {
+    var render = function () {
         var s = Math.round(200 + Math.random() * 200); // random size gives us random images
         d3.select("#furryFriends").selectAll("img").remove();
         d3.select("#furryFriends").selectAll("img")
@@ -59,7 +59,7 @@ var app = (function ($) { // run after document load
                 return s;
             });
 
-    }
+    };
 
     // callback for successfully opening websocket
     var onWSOpen = function () {
@@ -98,7 +98,7 @@ var app = (function ($) { // run after document load
 
 
     // public API, availabe from global namespace under app
-    function start(options) {
+    var start = function (options) {
         // override defaults with provided options
         settings = $.extend({}, defaults, options);
 
@@ -108,7 +108,7 @@ var app = (function ($) { // run after document load
 
         // fetch json data via AJAX
         $.getJSON(settings.api_url).done(onData).error(onError);
-    }
+    };
 
     // return our API
     return {

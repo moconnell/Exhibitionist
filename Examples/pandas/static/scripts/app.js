@@ -16,11 +16,11 @@ var app = (function ($) { // run after document load
 
     var req = null;
 
-    function reportError(err) {
+    var reportError =function (err) {
         console.log("Error fetching columns");
-    }
+    };
 
-    function BuildColumnsDescriptor(resp) {
+    var BuildColumnsDescriptor = function (resp) {
         // resp contains the columns data from the server
         // construct jqGrid-specific data structure
 
@@ -65,9 +65,9 @@ var app = (function ($) { // run after document load
 
         return {colNames: colNames, colModel: colModel};
 
-    }
+    };
 
-    function instantiateGrid(columns) {
+    var instantiateGrid = function (columns) {
         // columns is an object containing keys 'colNames','colModel'
 
         var $grid = $("#myGrid");
@@ -180,7 +180,7 @@ var app = (function ($) { // run after document load
         // Included $.jqGrid.js was modified with
         //  https://github.com/tonytomov/jqGrid/pull/426
         //  https://github.com/tonytomov/jqGrid/pull/427
-    }
+    };
 
     var fixPositionsOfFrozenDivs = function () {
         if (typeof this.grid.fbDiv !== "undefined") {
@@ -193,7 +193,7 @@ var app = (function ($) { // run after document load
 
 
     // public API, availabe from global namespace under app
-    function start(options) {
+    var start = function (options) {
         // override defaults with provided options
         settings = $.extend({}, defaults, options);
         // api url is the endpoint sans trailing slash
@@ -206,7 +206,7 @@ var app = (function ($) { // run after document load
             .then(BuildColumnsDescriptor, reportError)
             .done(instantiateGrid);
 
-    }
+    };
 
     // return our API
     return {
