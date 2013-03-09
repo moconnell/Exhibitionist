@@ -8,8 +8,7 @@ var app = (function ($) { // run after document load
     app = this;
 
     var defaults = {
-        objid: null,
-        api_url: null
+        objid: null
     };
 
     var settings = {};
@@ -26,20 +25,27 @@ var app = (function ($) { // run after document load
 
         // default values
         var defaultCol = {
+            // custom keys
             is_index: false,
+            headings: [], // list of column headings, for multindex
+
+            // passed to jqGrid colSpec
             cssClass: "",
             formatter: null,
             width: 80,
-            aligh: "left"
+            align: "left",
+            editable:true
         };
 
         // column headings, list of strings
         var colNames = resp.columns.map(function (item) {
-            // item.name is a (possibly singleton) list of strings, one per
+            // item.headings is a (possibly singleton) list of strings, one per
             // level of the column index.
             // HACK: Use <br/> to display multlevel columns as several rows of
             // header text.
-            return item.name.join("<br/>") + "<br/>";
+            var result=item.headings.join("<br/>") + "<br/>";
+            delete item.headings;
+            return result;
         });
 
         // list of col_descriptor(name,index,width,align,frozen,classes),
@@ -47,21 +53,26 @@ var app = (function ($) { // run after document load
         var colModel = [];
         for (var i in resp.columns) {
             if (resp.columns.hasOwnProperty(i)) {
-                var item = $.extend({}, defaultCol, resp.columns[i]);
-                item.id = item.id || String(i);
-                item.name = String(i);
+                var col = $.extend({}, defaultCol, resp.columns[i]);
 
-                var d = {name: item.name, index: String(i),
-                    width: item.width, align: item.align};
+                // remove keys not in the colSpec
+                var is_index =  col.is_index;
+                delete col.is_index;
 
-                if (item.is_index) {
+                col.id = col.id || String(i);
+                col.name = String(i);
+                col.index = col.index  || String(i);
+
+                if (is_index) {
                     // manually set the classes used by the header, to visually
                     // identify this as an index column.
-                    d = $.extend(d, {frozen: true, classes: "ui-state-default jqgrid-rownum"});
+                    col = $.extend(col, {frozen: true, classes: "ui-state-default jqgrid-rownum"});
                 }
-                colModel.push(d);
+
+                colModel.push(col);
             }
         }
+        console.log(colModel[0]);
 
         return {colNames: colNames, colModel: colModel};
 
@@ -100,8 +111,10 @@ var app = (function ($) { // run after document load
             loadComplete: function () {
                 fixPositionsOfFrozenDivs.call(this);
             },
-            height: "250px" //'auto'
-
+            height: "250px", //'auto'
+            cellEdit : true,
+            cellsubmit : 'remote',
+            cellurl : settings.modify_api_url
         });
 
         $grid.jqGrid('navGrid', '#pager', {refresh: true, add: false,
@@ -199,6 +212,7 @@ var app = (function ($) { // run after document load
         // api url is the endpoint sans trailing slash
         settings.cols_api_url = (settings.api_url + "/columns/" + settings.objid);
         settings.rows_api_url = (settings.api_url + "/rows/" + settings.objid);
+        settings.modify_api_url = (settings.api_url + "/edit/" + settings.objid);
 
         // success: AJAX(cols_api_url) -> BuildColumnsDescriptor(resp) -> instantiateGrid(columns)
         // fail:    AJAX(cols_api_url) -> reportError
