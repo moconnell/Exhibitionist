@@ -39,7 +39,7 @@ def spiral(x=FRAME_SIZE/2,y=FRAME_SIZE/2,
 obj=list(spiral())
 UrlDisplay(server.get_view_url("KittenGram",obj,'cat'))
 url=server.get_view_url("KittenGram",obj,'cat')
-UrlDisplay(url,str(FRAME_SIZE)+"px")
+UrlDisplay(url,width=str(FRAME_SIZE)+"px")
 
 # open view in browser
 
