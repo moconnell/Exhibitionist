@@ -158,7 +158,7 @@ that data with AJAX.
 2. we use the `@http_handler` **decorator** to define the "route" for this handler
 using a regexp. The **special marker** {{objid}} is included in the uri enables
 Exhibitionist to perform some magic.
-3. We define the ***Request Handler class** is defined,  All your request handlers
+3. We define the **Request Handler class** is defined,  All your request handlers
 must derive from `ExhibitionistRequestHandler` and should call super().__init__ properly.
 `JSONRequestHandler` is a subclass of `ExhibitionistRequestHandler` with
 the addition of a "write_json()" method for returning json data.
