@@ -83,7 +83,7 @@ class Testpubsubdispatch(unittest.TestCase):
         self.assertEqual(len(l), 1)
         self.assertEqual(l.pop(), "the payload5")
 
-    def test_make_sure_we_dont_recieve_our_own_message(self):
+    def test_make_sure_we_dont_receive_our_own_message(self):
 
         l = []
 
@@ -107,7 +107,7 @@ class Testpubsubdispatch(unittest.TestCase):
         self.assertEqual(len(l), 0)
 
 
-    def test_make_sure_we_dont_recieve_our_own_message_multiple_subs(self):
+    def test_make_sure_we_dont_receive_our_own_message_multiple_subs(self):
         # make sure the other subscriber does get it, no matter the subscribe order
 
         l = []
