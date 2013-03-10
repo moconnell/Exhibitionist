@@ -62,9 +62,8 @@ width="20" height="20" alt="FullScreen" id="btn" style="position:absolute; right
 </style>
 
 <script>
-console.log("doing it")
 var a = function() {
-    console.log("click");
+
     var el = $("iframe");
     var goFullScreen = el[0].requestFullScreen ||
             el[0].mozRequestFullScreen ||

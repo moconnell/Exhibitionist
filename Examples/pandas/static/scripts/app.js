@@ -72,7 +72,6 @@ var app = (function ($) { // run after document load
                 colModel.push(col);
             }
         }
-        console.log(colModel[0]);
 
         return {colNames: colNames, colModel: colModel};
 
