@@ -124,7 +124,7 @@ setup_args=dict(
     tests_require=['nose',
                    'coverage',
                    'ws4py>=0.2.4', # for websockets
-                   'requests', # for HTTP
+                   'requests>=1.0', # for HTTP
                    #'grequests', # for parallel HTTP
                  ],
     test_suite='nose.collector',
