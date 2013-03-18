@@ -139,6 +139,12 @@ which adapts to the running environment in order to present the view's url.
 In IPython-notebook it displays the url as inline HTML, in other environment,
 you'd get a hotlink or simply the url itself.
 
+**Related Projects**
+
+[Shiny](http://rstudio.github.com/shiny/) for **R** performs a similar function,
+although it goes a step further and defines a set of standard UI widgets that you
+can build a UI out of, declaratively.
+
 **Where can I see more?**
 
 The `examples/` directory contains several examples:
