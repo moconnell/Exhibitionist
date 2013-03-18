@@ -106,8 +106,6 @@ class MainViewHandler(JSONRequestHandler):
             logger.info(self.static_url("."))
             # render the template , see /templates/index.html
 
-            static_base=self.static_url("")[:-1] # strip trailing slash
-
             body = self.tmpl.generate(
                                       objid=objid,
                                       api_url=api_url,

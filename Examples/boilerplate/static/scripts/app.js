@@ -35,7 +35,7 @@ var app = (function ($, _) { // run after document load
 
     };
 
-    // callback for succesfuly opening websocket
+    // callback for successfully opening websocket
     var onWSOpen = function  () {
         console.log("websocket Opened.");
         // subscribe to channel named objid
@@ -51,7 +51,7 @@ var app = (function ($, _) { // run after document load
         ws.onmessage = onWSMessage;
     };
 
-    // public API, availabe from global namespace under app
+    // public API, available from global namespace under app
     var start = function (options) {
         // override defaults with provided options
         settings = $.extend({}, defaults, options);
