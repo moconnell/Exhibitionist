@@ -12,8 +12,8 @@ class UrlDisplay(object):# pragma: no cover
     def __init__(self, url, height="400px",width="100%", **kwds):
 
         self.url = url
-        self.width = width or '100%'
-        self.height = kwds.get('height','400px')
+        self.width = width
+        self.height = height
         self.fs_btn = kwds.get('fs_btn', False)
 
     # noinspection PyBroadException
