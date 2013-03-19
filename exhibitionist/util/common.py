@@ -37,14 +37,74 @@ class UrlDisplay(object):# pragma: no cover
 
     def notebook_repr(self):
         """ override this method"""
+        from hashlib import sha1
+        import random
+        rand_hash=sha1(str(random.random())).hexdigest()
 
         tmpl = """
-<iframe id=_xb src=%s style="width:100%%;height:%s; padding-bottom: 5px"
+
+<iframe src=%s style="width:100%%;height:%s; padding-bottom: 5px"
 oAllowFullScreen msAllowFullScreen mozAllowFullScreen webkitAllowFullScreen
-allowFullScreen></iframe>
+allowFullScreen id='%s' data-__exhibitionist_id='%s'></iframe>
+
+<script>
+// This whole bit is intended for the IPython-specific case
+// of child IFrames passing a a static representation of themselves
+// back to the IPython window so the view can "frozen" into the notebook
+if ( window.IPython !== undefined &&  xbReceiveMessage !== undefined ) {
+
+    window.addEventListener("message", xbReceiveMessage, false);
+
+    function xbReceiveMessage(event)
+    {
+        console.log("received postMessage notification");
+
+    //    window.xbev = event.data
+
+    // TODO validate origin, and data structure
+
+        xbid = event.data.xbid;
+        svg = event.data.svg;
+//        console.log("setting html",xbid)
+        var maps = {}
+        cells = IPython.notebook.get_cells().forEach(function(c) {
+            xbId=$(c.element).find("iframe").data('__exhibitionist_id')
+            if (xbId) {
+                maps[xbid]= c.cell_id;
+            }
+        });
+        cell = IPython.notebook.get_cells().filter(function(c){return c.cell_id === maps[xbid]})
+        if (cell.length) {
+//            console.log("setting output")
+            cell[0].output_area.outputs[0].html=(svg)
+        };
+        $("#"+xbid).parent().html(svg)
+    }
+}
+
+(function f(){
+
+    function g(){
+    // TODO: make more robust.
+        var xbid = '%s'
+        if ( $("#"+xbid).length) {
+            console.log("trying to find myself","#"+xbid,$("#"+xbid));
+
+            $("#"+xbid)[0].contentWindow.postMessage(xbid,"*")
+             // setTimeout(g,1000);
+        } else {
+            setTimeout(g,500);
+        }
+    }
+     setTimeout(g,1000);
+ }
+)();
+
+</script>
 
 """
-        result = tmpl % (self.url, self.height)
+
+        result = tmpl % (self.url, self.height,rand_hash,rand_hash,rand_hash)
 
 # Source: public domain icon from wikimedia commons
         if self.fs_btn:
