@@ -205,6 +205,9 @@ Have a look at `setting.py`, and use a `local_settings.py` file to get going.
 
 - The server's socket isn't released until you call server.stop(), remember
 to cleanup.
+- If an exhibitionist server thread is launched during the
+import of  module, make sure and use server.start(block=False).
+blocking ona launched thread during import is forbidden in python.
 - Be aware that you are exposing your data through a local web server.
 By default the server binds to localhost/127.0.0.1 which usually wouldn't
 be accessible to other hosts on the network. In general, you should be
