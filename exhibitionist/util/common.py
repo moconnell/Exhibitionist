@@ -43,7 +43,7 @@ class UrlDisplay(object):# pragma: no cover
 
         tmpl = """
 
-<iframe src=%s style="width:100%%;height:%s; padding-bottom: 5px"
+<iframe src=%s style="width:%s;height:%s; padding-bottom: 5px"
 oAllowFullScreen msAllowFullScreen mozAllowFullScreen webkitAllowFullScreen
 allowFullScreen id='%s' data-__exhibitionist_id='%s'></iframe>
 
@@ -51,9 +51,7 @@ allowFullScreen id='%s' data-__exhibitionist_id='%s'></iframe>
 // This whole bit is intended for the IPython-specific case
 // of child IFrames passing a a static representation of themselves
 // back to the IPython window so the view can "frozen" into the notebook
-if ( window.IPython !== undefined &&  xbReceiveMessage !== undefined ) {
-
-    window.addEventListener("message", xbReceiveMessage, false);
+if ( window.IPython !== undefined &&  window.xbReceiveMessage === undefined ) {
 
     function xbReceiveMessage(event)
     {
@@ -80,6 +78,7 @@ if ( window.IPython !== undefined &&  xbReceiveMessage !== undefined ) {
         };
         $("#"+xbid).parent().html(svg)
     }
+    window.addEventListener("message", xbReceiveMessage, false);
 }
 
 (function f(){
@@ -104,7 +103,7 @@ if ( window.IPython !== undefined &&  xbReceiveMessage !== undefined ) {
 
 """
 
-        result = tmpl % (self.url, self.height,rand_hash,rand_hash,rand_hash)
+        result = tmpl % (self.url, self.width,self.height,rand_hash,rand_hash,rand_hash)
 
 # Source: public domain icon from wikimedia commons
         if self.fs_btn:
