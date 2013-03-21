@@ -26,7 +26,7 @@ server = get_server(template_path=TEMPLATE_DIR,static_path=STATIC_DIR). \
 
 
 def my_repr(df):
-    return UrlDisplay(server.get_view_url("dfView", df), "350px")._repr_html_()
+    return UrlDisplay(server.get_view_url("dfView", df), "350px",fs_btn=True)._repr_html_()
 
 # monkey patch pandas to override it's default HTML repr. This could also
 # be done # upstream as part of pandas itself.
