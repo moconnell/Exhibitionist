@@ -51,8 +51,9 @@ allowFullScreen id='%s' data-__exhibitionist_id='%s'></iframe>
 // This whole bit is intended for the IPython-specific case
 // of child IFrames passing a a static representation of themselves
 // back to the IPython window so the view can "frozen" into the notebook
-if ( window.IPython !== undefined &&  window.xbReceiveMessage === undefined ) {
 
+if ( window.IPython !== undefined ) {
+    console.log("registering xb event manager1")
     function xbReceiveMessage(event)
     {
         console.log("received postMessage notification");
