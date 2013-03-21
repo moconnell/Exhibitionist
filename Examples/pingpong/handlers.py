@@ -21,8 +21,6 @@ class PingPongView(JSONRequestHandler):
         #note no leading slash, common cause of errors
         tmpl_file = os.path.join(self.get_template_path(),"index.html")
         if not(os.path.isdir(self.get_template_path())):
-            # logger.fatal(self.transforms)
-            logger.fatal(self._transforms)
             self.set_status(500)
             return self.finish("Template path does not exist")
 

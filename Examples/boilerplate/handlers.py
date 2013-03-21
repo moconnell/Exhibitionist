@@ -53,8 +53,6 @@ class MainViewHandler(JSONRequestHandler):
 
         tmpl_file = os.path.join(self.get_template_path(),"index.html")
         if not(os.path.isdir(self.get_template_path())):
-            # logger.fatal(self.transforms)
-            logger.fatal(self._transforms)
             self.set_status(500)
             return self.finish("Template path does not exist")
 
@@ -103,7 +101,6 @@ class MainViewHandler(JSONRequestHandler):
             # Also embedded int he client HTML, the client opens a websocket
             # on load, and subscribes to notification on the "channel= {objid}"
             ws_url = context.get_ws_url()
-            logger.info(self.static_url("."))
             # render the template , see /templates/index.html
 
             body = self.tmpl.generate(

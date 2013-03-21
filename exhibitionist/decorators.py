@@ -93,7 +93,6 @@ class http_handler(object):
         else:
             delattr(this,SUPER_CANARY)
 
-
         return val
 
     def inject_context(self, this, f, *args, **kwargs):
