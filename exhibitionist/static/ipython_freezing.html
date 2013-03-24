@@ -1,52 +1,95 @@
-// This whole bit is intended for the IPython-specific case
-// of child IFrames passing a a static representation of themselves
-// back to the IPython window so the view can be  "frozen" into the notebook
 <script>
-if ( window.IPython !== undefined ) {
-    console.log("registering xb event manager1")
-    function xbReceiveMessage(event)
-    {
-        console.log("received postMessage notification");
+  // This whole bit is intended for the IPython-specific case
+  // of child IFrames passing a a static representation of themselves
+  // back to the IPython window so the view can be  "frozen" into the notebook
+  (function () {
+    window.xb = window.xb || {};
+    var xbid = '%s';
 
-    //    window.xbev = event.data
+    function spin_notify_iframe(xbid) {
+// spins until the iframe is loaded
+// then posts a message, letting the iframe know
+// it's xbid
+      var cnt = 0;
+      function g() {
 
-    // TODO validate origin, and data structure
-
-        xbid = event.data.xbid;
-        svg = event.data.svg;
-//        console.log("setting html",xbid)
-        var maps = {}
-        cells = IPython.notebook.get_cells().forEach(function(c) {
-            xbId=$(c.element).find("iframe").data('__exhibitionist_id')
-            if (xbId) {
-                maps[xbid]= c.cell_id;
-            }
-        });
-        cell = IPython.notebook.get_cells().filter(function(c){return c.cell_id === maps[xbid]})
-        if (cell.length) {
-//            console.log("setting output")
-            cell[0].output_area.outputs[0].html=(svg)
-        }
-        $("#"+xbid).parent().html(svg)
-    }
-    window.addEventListener("message", xbReceiveMessage, false);
-}
-
-(function f(){
-
-    function g(){
-    // TODO: make more robust.
-        var xbid = '%s'
-        if ( $("#"+xbid).length) {
-            console.log("trying to find myself","#"+xbid,$("#"+xbid));
-
-            $("#"+xbid)[0].contentWindow.postMessage(xbid,"*")
-             // setTimeout(g,1000);
+        sel = "#" + xbid;
+        console.log("trying to find myself", "#" + xbid);
+        //console.log(sel,$(sel).length,$(sel)[0]);
+        win = $(sel).length &&
+            ($(sel)[0] && $(sel)[0].contentWindow);
+        if (win) {
+          win.postMessage(xbid, "*");
         } else {
-            setTimeout(g,500);
+          cnt += 1;
+          if (cnt > 5) {
+            console.log("giving up on " + xbid)
+          } else {
+            setTimeout(g, 200);
+          }
         }
+      }
+
+      // TODO: if this timeout isn't long enough, we'll fail. make more robust.
+      //
+      setTimeout(g, 500);
     }
-     setTimeout(g,1000);
- }
-)();
+
+    console.log("wxb", window.xb[xbid], xbid);
+    if (window.IPython !== undefined && window.xb[xbid] === undefined) {
+      window.xb[xbid] = true;
+      console.log("registering xb event manager1",xbid);
+      xbReceiveMessage = (function (xbid) {
+        return function (event) {
+          console.log("received postMessage notification");
+          // TODO validate origin, and data structure
+
+          var xbid = event.data.xbid;
+          var blob = event.data.blob;
+          // build a map of iframe ids to IPNB cell ids for fast lookup
+          var maps = {};
+          cells = IPython.notebook.get_cells().forEach(function (c) {
+            var xbId = $(c.element).find("iframe").data('__exhibitionist_id');
+            if (xbId) {
+              maps[xbid] = c.cell_id;
+            }
+          });
+          // overwrite the output area, this will get serialized
+          // with the notebook
+          cell = IPython.notebook.get_cells().filter(function (c) {
+            return c.cell_id === maps[xbid];
+          });
+          if (cell.length) {
+//            console.log("setting output")
+            cell[0].output_area.outputs[0].html = (blob)
+          }
+//        console.log("setting html",xbid)
+
+          // overwrite the DOM node of the IFRAME with the blob sent by the iframe.
+          // this will update the view shown by the browser to the static version
+
+
+          // TODO: client side templating
+           console.log("saving markup",xbid)
+          var iframe_markup = $("#_div_" + xbid).html();
+          $("#_div_" + xbid).html(blob);
+          $("#_div_" + xbid).dblclick(
+              (function (markup, xbid) {
+                return function (ev) {
+                  console.log("dblclick markup,callback, injecting",markup.substr(0,10));
+                  $(this).unbind().html(markup);
+                  spin_notify_iframe(xbid);
+                  ev.stopImmediatePropagation()
+                }
+              })(iframe_markup, xbid));
+
+        }
+      })(xbid);
+
+      window.addEventListener("message", xbReceiveMessage, false);
+      spin_notify_iframe(xbid)
+    }
+
+
+  })()
 </script>
