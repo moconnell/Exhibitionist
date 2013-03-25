@@ -118,6 +118,7 @@ setup_args=dict(
     author='y-p',
     maintainer_email='Issues@at.github',
     packages = find_packages(exclude=['Examples']),
+    package_data={'exhibitionist': ['static/*.*']},
     url='http://www.github.com/y-p/Exhibitionist',
     license='LICENSE.txt',
     description=DESCRIPTION,
