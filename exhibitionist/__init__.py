@@ -24,7 +24,7 @@ except:
 if TORNADO_LOG_FILE:
     import tornado.options
 
-    tornado.options.options['log_file_prefix'].set(TORNADO_LOG_FILE)
+    tornado.options.log_file_prefix = TORNADO_LOG_FILE
     tornado.options.parse_command_line([])
 
 
